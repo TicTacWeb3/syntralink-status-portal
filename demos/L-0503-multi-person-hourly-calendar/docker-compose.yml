@@ -1,0 +1,11 @@
+services:
+  multi-person-hourly-calendar:
+    image: ghcr.io/tictacweb3/syntralink-l-0503-multi-person-hourly-calendar:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - multi-person-hourly-calendar-data:/data
+    restart: unless-stopped
+
+volumes:
+  multi-person-hourly-calendar-data:

@@ -1,0 +1,62 @@
+name: Publish demo Docker images
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "demos/**"
+      - ".github/workflows/publish-demo-images.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - context: demos/L-0444-reddit-heavy-replacement255-plumbing-quote-schedule-crm
+            image: ghcr.io/tictacweb3/syntralink-l-0444-replacement255-plumbing-quote-schedule-crm:latest
+          - context: demos/L-0446-reddit-jinukurosawa-nocode-sales-crm-rescue-board
+            image: ghcr.io/tictacweb3/syntralink-l-0446-nocode-sales-crm-rescue-board:latest
+          - context: demos/L-0478-reddit-zoview-internal-admin-tools
+            image: ghcr.io/tictacweb3/syntralink-l-0478-internal-admin-tools:latest
+          - context: demos/L-0488-reddit-capable-capital800
+            image: ghcr.io/tictacweb3/syntralink-l-0488-capital800:latest
+          - context: demos/L-0489-reddit-lumpia-goddess-quickbooks-estimate-invoice
+            image: ghcr.io/tictacweb3/syntralink-l-0489-goddess-quickbooks-estimate-invoice:latest
+          - context: demos/L-0494-reddit-republicmotor905-internal-bi-agent-guardrails
+            image: ghcr.io/tictacweb3/syntralink-l-0494-internal-bi-agent-guardrails:latest
+          - context: demos/L-0497-reddit-vegetable-mammoth776-customer-support-agent
+            image: ghcr.io/tictacweb3/syntralink-l-0497-mammoth776-customer-support-agent:latest
+          - context: demos/L-0498-reddit-beautiful-hyena-5861-anyone-else-suffering-from-tool-
+            image: ghcr.io/tictacweb3/syntralink-l-0498-hyena-5861-anyone-else-suffering-from-tool:latest
+          - context: demos/L-0499-reddit-confident-path-9388-sop-automation
+            image: ghcr.io/tictacweb3/syntralink-l-0499-path-9388-sop-automation:latest
+          - context: demos/L-0500-reddit-similar-wafer-851-help-create-chatbot-for-sales-busin
+            image: ghcr.io/tictacweb3/syntralink-l-0500-wafer-851-help-create-chatbot-for-sales-busin:latest
+          - context: demos/L-0502-reddit-ita-intelligent-plan7190-document-intelligence-portal
+            image: ghcr.io/tictacweb3/syntralink-l-0502-intelligent-plan7190-document-intelligence-portal:latest
+          - context: demos/L-0503-multi-person-hourly-calendar
+            image: ghcr.io/tictacweb3/syntralink-l-0503-multi-person-hourly-calendar:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          push: true
+          tags: ${{ matrix.image }}

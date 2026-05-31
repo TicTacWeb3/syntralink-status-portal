@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Household Hourly Calendar - SyntraLink Demo</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <strong>SyntraLink</strong>
+      <span>Multi-person calendar</span>
+    </div>
+    <button class="nav active" data-view="calendar">Week board</button>
+    <button class="nav" data-view="people">People</button>
+    <button class="nav" data-view="entry">Add entry</button>
+    <button class="nav" data-view="print">Print setup</button>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Readable weekly schedule for 5+ people</p>
+        <h1>See everyone’s hour at a glance.</h1>
+        <p class="lede">Built for the exact problem: Thursday at 10, Robin is at the gym, Ellie is at work, Glinda is at school, Rose is with friends, and Rue is walking the dog. Dense, readable, and print-friendly.</p>
+      </div>
+      <div class="hero-actions">
+        <button id="printBtn">Print week</button>
+        <button class="secondary" id="sampleBtn">Load sample week</button>
+      </div>
+    </header>
+
+    <section id="calendar" class="view active">
+      <div class="toolbar">
+        <div>
+          <p class="label">Display mode</p>
+          <div class="segmented">
+            <button class="mode active" data-mode="compact">Compact blocks</button>
+            <button class="mode" data-mode="people">People columns</button>
+          </div>
+        </div>
+        <label>Start hour
+          <select id="startHour"></select>
+        </label>
+        <label>End hour
+          <select id="endHour"></select>
+        </label>
+        <label>Filter person
+          <select id="personFilter"><option value="all">All people</option></select>
+        </label>
+      </div>
+
+      <section class="panel board-panel">
+        <div class="panel-head">
+          <div>
+            <p class="label">Weekly board</p>
+            <h2 id="boardTitle">Compact multi-person view</h2>
+          </div>
+          <span class="badge" id="entryCount">0 entries</span>
+        </div>
+        <div id="calendarGrid" class="calendar-grid"></div>
+      </section>
+    </section>
+
+    <section id="people" class="view">
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="label">People tracked</p>
+            <h2>Color-coded schedule lanes</h2>
+          </div>
+        </div>
+        <div id="peopleGrid" class="people-grid"></div>
+      </div>
+    </section>
+
+    <section id="entry" class="view">
+      <div class="layout two">
+        <section class="panel">
+          <p class="label">New schedule block</p>
+          <h2>Add or update an activity</h2>
+          <form id="entryForm" class="form-grid">
+            <label>Person<select id="entryPerson"></select></label>
+            <label>Day<select id="entryDay"></select></label>
+            <label>Hour<select id="entryHour"></select></label>
+            <label>Activity<input id="entryActivity" placeholder="Gym, work, school..." required /></label>
+            <label class="wide">Details<input id="entryDetails" placeholder="Optional notes, location, pickup, reminder..." /></label>
+            <div class="actions wide">
+              <button type="submit">Save activity</button>
+              <button type="button" class="secondary" id="clearHour">Clear selected hour</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="panel">
+          <p class="label">Why normal calendars fail</p>
+          <h2>One hour can contain five lives.</h2>
+          <p class="body-copy">Instead of stacking tiny overlapping events, every hour cell is designed as a readable roster. The print view keeps names, activity and short notes visible on paper.</p>
+          <ul class="clean-list">
+            <li>Every hour shows all people, not overlapping slivers.</li>
+            <li>Missing entries are visible as empty slots.</li>
+            <li>Filtering helps plan one person without losing the household view.</li>
+            <li>Print mode removes controls and tightens the grid.</li>
+          </ul>
+        </section>
+      </div>
+    </section>
+
+    <section id="print" class="view">
+      <div class="layout two">
+        <section class="panel">
+          <p class="label">Print setup</p>
+          <h2>Make the week readable on paper</h2>
+          <div class="print-options">
+            <label><input type="checkbox" id="hideEmpty" /> Hide empty person slots</label>
+            <label><input type="checkbox" id="largePrint" checked /> Use larger print spacing</label>
+            <label><input type="checkbox" id="includeNotes" checked /> Include short details</label>
+          </div>
+          <div class="actions">
+            <button id="printBtn2">Print calendar</button>
+            <button class="secondary" id="exportCsv">Copy CSV</button>
+          </div>
+        </section>
+        <section class="panel">
+          <p class="label">Best use</p>
+          <h2>For families, roommates, teams and care schedules.</h2>
+          <p class="body-copy">The goal is not another event calendar. It is a weekly status board for multiple people, optimized for dense hourly information and fast scanning.</p>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
