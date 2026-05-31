@@ -1,5 +1,8 @@
 FROM python:3.12-slim
 
+LABEL org.opencontainers.image.source="https://github.com/TicTacWeb3/syntralink-status-portal" \
+      org.opencontainers.image.description="SyntraLink customer work-status portal with a minimal SQLite backend"
+
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PORT=8080 \

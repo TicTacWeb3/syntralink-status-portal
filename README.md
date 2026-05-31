@@ -27,6 +27,8 @@ With Docker Compose:
 docker compose up --build
 ```
 
+For SyntraNet, upload only `docker-compose.yml`. It does not require the project folder or a local Docker build: the service uses the prebuilt public image `ghcr.io/tictacweb3/syntralink-status-portal:latest`, exposes port `8080`, and stores SQLite data in the `syntralink-db` volume.
+
 Admin dashboard:
 http://127.0.0.1:8080/index.html
 
