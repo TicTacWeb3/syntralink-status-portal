@@ -2,6 +2,7 @@
 import json
 import os
 import sqlite3
+import threading
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
@@ -10,6 +11,7 @@ from urllib.parse import parse_qs, urlparse
 APP_DIR = Path(__file__).resolve().parent
 DB_PATH = Path(os.environ.get("DATABASE_PATH", APP_DIR / "data" / "syntralink.db"))
 PORT = int(os.environ.get("PORT", "8080"))
+FALLBACK_PORT = int(os.environ.get("FALLBACK_PORT", "0"))
 
 DEMO_JOBS = [
     {
@@ -213,7 +215,17 @@ class Handler(SimpleHTTPRequestHandler):
 
 if __name__ == "__main__":
     init_db()
-    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
-    print(f"SyntraLink status portal listening on http://0.0.0.0:{PORT}")
+    servers = [ThreadingHTTPServer(("0.0.0.0", PORT), Handler)]
+    if FALLBACK_PORT and FALLBACK_PORT != PORT:
+        try:
+            servers.append(ThreadingHTTPServer(("0.0.0.0", FALLBACK_PORT), Handler))
+        except OSError as error:
+            print(f"Fallback port {FALLBACK_PORT} disabled: {error}")
+
+    for server in servers[1:]:
+        threading.Thread(target=server.serve_forever, daemon=True).start()
+
+    ports = ", ".join(str(server.server_address[1]) for server in servers)
+    print(f"SyntraLink status portal listening on ports: {ports}")
     print(f"SQLite database: {DB_PATH}")
-    server.serve_forever()
+    servers[0].serve_forever()
