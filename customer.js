@@ -1,4 +1,5 @@
 const STORAGE_KEY = 'syntralink_jobs_v2';
+const API_ROOT = '/api';
 
 const fallbackJobs = [
   {
@@ -110,9 +111,21 @@ function showEmpty() {
   qs('#emptyResult').classList.remove('hidden');
 }
 
-function lookup(email) {
-  const jobs = loadJobs();
+async function lookup(email) {
   const normalized = email.trim().toLowerCase();
+  try {
+    const response = await fetch(`${API_ROOT}/jobs/by-email?email=${encodeURIComponent(normalized)}`);
+    if (response.ok) {
+      const payload = await response.json();
+      showJob(normalizeJobs([payload.job])[0]);
+      return;
+    }
+    if (response.status !== 404) throw new Error('API unavailable');
+  } catch {
+    // Static file fallback: use localStorage when the API is unavailable.
+  }
+
+  const jobs = loadJobs();
   const job = jobs.find((item) => item.email.toLowerCase() === normalized);
   if (!job) {
     showEmpty();

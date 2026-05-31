@@ -1,6 +1,7 @@
 const STORAGE_KEY = 'syntralink_jobs_v2';
 const ADMIN_KEY = 'syntralink_admin_auth';
 const ADMIN_PASSWORD = 'demo123';
+const API_ROOT = '/api';
 
 const demoJobs = [
   {
@@ -120,6 +121,34 @@ function translateText(value = '') {
 
 function saveJobs() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(jobs));
+  persistJobsToServer();
+}
+
+async function persistJobsToServer() {
+  try {
+    await fetch(`${API_ROOT}/jobs`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jobs })
+    });
+  } catch {
+    // Static file fallback: localStorage remains the source of truth.
+  }
+}
+
+async function loadJobsFromServer() {
+  try {
+    const response = await fetch(`${API_ROOT}/jobs`);
+    if (!response.ok) return;
+    const payload = await response.json();
+    if (!Array.isArray(payload.jobs) || !payload.jobs.length) return;
+    jobs = normalizeJobs(payload.jobs);
+    selectedId = jobs.find((job) => job.id === selectedId)?.id || jobs[0].id;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(jobs));
+    renderAll();
+  } catch {
+    // Running from file:// or a plain static server: keep localStorage mode.
+  }
 }
 
 function toast(message) {
@@ -475,6 +504,7 @@ qs('#copyClause')?.addEventListener('click', () => copyText(qs('#clause').value,
 qs('#saveRules')?.addEventListener('click', () => toast('Rules saved in the local demo.'));
 
 jobs = normalizeJobs(jobs);
-saveJobs();
+localStorage.setItem(STORAGE_KEY, JSON.stringify(jobs));
 requireAuth();
 renderAll();
+loadJobsFromServer();

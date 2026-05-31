@@ -22,14 +22,26 @@ Work status management for service businesses, based on the Reddit comments:
 
 ## How To Open
 
+With Docker Compose:
+```bash
+docker compose up --build
+```
+
 Admin dashboard:
-http://127.0.0.1:8765/index.html
+http://127.0.0.1:8080/index.html
 
 Customer portal:
-http://127.0.0.1:8765/customer.html
+http://127.0.0.1:8080/customer.html
+
+Health check:
+http://127.0.0.1:8080/api/health
+
+The Docker setup runs a minimal Python server with a SQLite database stored in the `syntralink-db` Docker volume. Admin changes, Excel/CSV imports, and customer portal views persist in that database.
 
 Local file fallback:
 file:///home/endre/syntralink-reddit-demos/L-0501-reddit-waste-dragonfruit346-status-portal/index.html
+
+When opened directly as static files, the app falls back to browser `localStorage`.
 
 Demo admin password:
 `demo123`

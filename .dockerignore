@@ -1,0 +1,10 @@
+.git
+.agents
+.codex
+.~lock.*
+*.db
+*.db-shm
+*.db-wal
+__pycache__
+.DS_Store
+node_modules

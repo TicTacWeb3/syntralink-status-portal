@@ -1,0 +1,15 @@
+services:
+  syntralink-status-portal:
+    build: .
+    container_name: syntralink-status-portal
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: "8080"
+      DATABASE_PATH: /data/syntralink.db
+    volumes:
+      - syntralink-db:/data
+    restart: unless-stopped
+
+volumes:
+  syntralink-db:
