@@ -10,8 +10,12 @@ from urllib.parse import parse_qs, urlparse
 
 APP_DIR = Path(__file__).resolve().parent
 DB_PATH = Path(os.environ.get("DATABASE_PATH", APP_DIR / "data" / "syntralink.db"))
-PORT = int(os.environ.get("PORT", "8080"))
-FALLBACK_PORT = int(os.environ.get("FALLBACK_PORT", "0"))
+PORT = int(os.environ.get("PORT", "3000"))
+FALLBACK_PORTS = [
+    int(port.strip())
+    for port in os.environ.get("FALLBACK_PORTS", "8080,80").split(",")
+    if port.strip()
+]
 
 DEMO_JOBS = [
     {
@@ -216,11 +220,13 @@ class Handler(SimpleHTTPRequestHandler):
 if __name__ == "__main__":
     init_db()
     servers = [ThreadingHTTPServer(("0.0.0.0", PORT), Handler)]
-    if FALLBACK_PORT and FALLBACK_PORT != PORT:
+    for fallback_port in FALLBACK_PORTS:
+        if fallback_port == PORT:
+            continue
         try:
-            servers.append(ThreadingHTTPServer(("0.0.0.0", FALLBACK_PORT), Handler))
+            servers.append(ThreadingHTTPServer(("0.0.0.0", fallback_port), Handler))
         except OSError as error:
-            print(f"Fallback port {FALLBACK_PORT} disabled: {error}")
+            print(f"Fallback port {fallback_port} disabled: {error}")
 
     for server in servers[1:]:
         threading.Thread(target=server.serve_forever, daemon=True).start()

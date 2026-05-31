@@ -27,16 +27,16 @@ With Docker Compose:
 docker compose up --build
 ```
 
-For SyntraNet, upload only `docker-compose.yml`. It does not require the project folder or a local Docker build: the service uses the prebuilt public image `ghcr.io/tictacweb3/syntralink-status-portal:latest`, exposes port `8080`, and stores SQLite data in the `syntralink-db` volume.
+For SyntraNet, upload only `docker-compose.yml`. It does not require the project folder or a local Docker build: the service uses the prebuilt public image `ghcr.io/tictacweb3/syntralink-status-portal:latest`, exposes port `3000`, and stores SQLite data in the `syntralink-db` volume.
 
 Admin dashboard:
-http://127.0.0.1:8080/index.html
+http://127.0.0.1:3000/index.html
 
 Customer portal:
-http://127.0.0.1:8080/customer.html
+http://127.0.0.1:3000/customer.html
 
 Health check:
-http://127.0.0.1:8080/api/health
+http://127.0.0.1:3000/api/health
 
 The Docker setup runs a minimal Python server with a SQLite database stored in the `syntralink-db` Docker volume. Admin changes, Excel/CSV imports, and customer portal views persist in that database.
 

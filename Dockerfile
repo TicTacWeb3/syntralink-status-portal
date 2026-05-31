@@ -5,8 +5,8 @@ LABEL org.opencontainers.image.source="https://github.com/TicTacWeb3/syntralink-
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PORT=8080 \
-    FALLBACK_PORT=80 \
+    PORT=3000 \
+    FALLBACK_PORTS=8080,80 \
     DATABASE_PATH=/data/syntralink.db
 
 WORKDIR /app
@@ -15,6 +15,6 @@ COPY index.html customer.html app.js customer.js styles.css README.md DEMO_PROMP
 
 RUN mkdir -p /data
 
-EXPOSE 80 8080
+EXPOSE 3000 8080 80
 
 CMD ["python", "server.py"]

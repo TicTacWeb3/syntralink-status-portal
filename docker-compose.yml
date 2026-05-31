@@ -2,7 +2,7 @@ services:
   syntralink-status-portal:
     image: ghcr.io/tictacweb3/syntralink-status-portal:latest
     ports:
-      - "8080:8080"
+      - "3000:3000"
     volumes:
       - syntralink-db:/data
     restart: unless-stopped
