@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SyntraLink Admin - Work Status Management</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
+</head>
+<body class="admin-body">
+  <section id="loginScreen" class="login-screen">
+    <div class="ambient-grid"></div>
+    <div class="login-card">
+      <p class="eyebrow">Protected owner area</p>
+      <h1>Work status management for customers who should not need to call.</h1>
+      <p class="lede">Update processes, import customers from Excel, and publish a self-service portal tied to each customer email.</p>
+      <form id="loginForm" class="login-form">
+        <label>
+          Admin password
+          <input id="password" type="password" autocomplete="current-password" placeholder="demo123" />
+        </label>
+        <button type="submit">Enter dashboard</button>
+        <p class="hint">Local demo: password <strong>demo123</strong></p>
+      </form>
+      <a class="ghost-link" href="customer.html">Open separate customer portal</a>
+    </div>
+  </section>
+
+  <section id="adminApp" class="app-shell hidden">
+    <aside class="sidebar">
+      <div class="brand">
+        <strong>SyntraLink</strong>
+        <span>operations OS</span>
+      </div>
+      <button class="nav active" data-view="overview">Overview</button>
+      <button class="nav" data-view="jobs">Jobs</button>
+      <button class="nav" data-view="import">Import Excel</button>
+      <button class="nav" data-view="settings">Rules</button>
+      <a class="nav link-nav" href="customer.html">Customer portal</a>
+      <button class="nav danger-nav" id="logout">Log out</button>
+    </aside>
+
+    <main>
+      <header class="hero-admin">
+        <div>
+          <p class="eyebrow">Protected admin dashboard</p>
+          <h1>Control every job, promise, and customer update.</h1>
+        </div>
+        <div class="hero-actions">
+          <button class="secondary" id="copyCustomerPage">Copy portal URL</button>
+          <button id="quickAdvance">Advance selected job</button>
+        </div>
+      </header>
+
+      <section id="overview" class="view active">
+        <div class="metrics">
+          <article><b id="metricJobs">0</b><span>Loaded jobs</span></article>
+          <article><b id="metricUpdates">0</b><span>Updates promised today</span></article>
+          <article><b id="metricAtRisk">0</b><span>Information gaps</span></article>
+          <article><b id="metricViews">0</b><span>Customer views</span></article>
+        </div>
+
+        <div class="layout two">
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <p class="label">Operations center</p>
+                <h2>Jobs that need attention</h2>
+              </div>
+              <span class="badge">Live data</span>
+            </div>
+            <ul id="priorityList" class="worklist"></ul>
+          </section>
+
+          <section class="panel visual-panel">
+            <p class="label">Customer experience</p>
+            <h2>From “can you call me?” to “I will check the link.”</h2>
+            <p class="small">Every customer record has an email, status, current step, blocker, next promise, and public notes. The owner updates from here; the customer only sees their own process.</p>
+            <div class="status-radar">
+              <span style="--i:82%">Received</span>
+              <span style="--i:64%">In progress</span>
+              <span style="--i:38%">Waiting</span>
+              <span style="--i:92%">Ready</span>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section id="jobs" class="view">
+        <div class="toolbar">
+          <input id="search" placeholder="Search name, email, job, status..." />
+          <select id="statusFilter">
+            <option value="all">All</option>
+            <option value="Needs update">Needs update</option>
+            <option value="In progress">In progress</option>
+            <option value="Waiting on customer">Waiting on customer</option>
+            <option value="Ready">Ready</option>
+          </select>
+          <button id="newJob">New job</button>
+        </div>
+
+        <div class="split-workspace">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Email</th>
+                  <th>Job</th>
+                  <th>Status</th>
+                  <th>Next update</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="jobsBody"></tbody>
+            </table>
+          </div>
+
+          <aside class="panel editor-panel">
+            <p class="label">Editor status</p>
+            <h2 id="editorTitle">Select a job</h2>
+            <form id="jobForm" class="form-grid">
+              <label>Customer<input id="clientName" required /></label>
+              <label>Email<input id="clientEmail" type="email" required /></label>
+              <label>Job<input id="jobTitle" required /></label>
+              <label>Status
+                <select id="jobStatus">
+                  <option>Needs update</option>
+                  <option>In progress</option>
+                  <option>Waiting on customer</option>
+                  <option>Waiting on supplier</option>
+                  <option>Ready</option>
+                  <option>Completed</option>
+                </select>
+              </label>
+              <label>Current step<input id="currentStep" required /></label>
+              <label>Next update<input id="nextUpdate" required /></label>
+              <label class="wide">Public customer note<textarea id="publicNote" rows="4"></textarea></label>
+              <label class="wide">Process steps, comma-separated<textarea id="stepsInput" rows="3"></textarea></label>
+              <div class="actions wide">
+                <button type="submit">Save status</button>
+                <button type="button" class="secondary" id="duplicateJob">Duplicate</button>
+                <button type="button" class="danger" id="deleteJob">Delete</button>
+              </div>
+            </form>
+          </aside>
+        </div>
+      </section>
+
+      <section id="import" class="view">
+        <div class="layout two">
+          <section class="panel import-panel">
+            <p class="label">Bulk upload</p>
+            <h2>Import customers and jobs from Excel.</h2>
+            <p class="small">Upload a .xlsx, .xls, or .csv file with these columns: Customer, Email, Job, Status, Current step, Next update, Note, Process steps.</p>
+            <label class="dropzone" for="excelFile">
+              <input id="excelFile" type="file" accept=".xlsx,.xls,.csv" />
+              <strong>Drop or select an Excel/CSV file</strong>
+              <span id="fileName">No file selected</span>
+            </label>
+            <div class="actions">
+              <button id="downloadTemplate">Download CSV template</button>
+              <button class="secondary" id="clearImported">Restore demo data</button>
+            </div>
+          </section>
+
+          <section class="panel">
+            <p class="label">Import preview</p>
+            <h2 id="importCount">0 rows ready</h2>
+            <div id="importPreview" class="preview-list"></div>
+          </section>
+        </div>
+      </section>
+
+      <section id="settings" class="view">
+        <div class="layout two">
+          <section class="panel">
+            <p class="label">Expectations clause</p>
+            <h2>Text for estimates or booking confirmations</h2>
+            <textarea id="clause" rows="9">During the job we will keep you updated without requiring you to call: you will receive a personal link tied to your email with the current status, next step, and next promised update time. We will notify you when work starts, when a decision or approval is needed, and when the job closes with a summary/photos.</textarea>
+            <div class="actions">
+              <button id="copyClause">Copy clause</button>
+              <button class="secondary" id="saveRules">Save rules</button>
+            </div>
+          </section>
+          <section class="panel">
+            <p class="label">Owner rules</p>
+            <h2>Operational automations</h2>
+            <div class="settings-list">
+              <label><input type="checkbox" checked /> Require a next update for every open job</label>
+              <label><input type="checkbox" checked /> Highlight jobs with no update for 24 hours</label>
+              <label><input type="checkbox" checked /> Show customers public notes only</label>
+              <label><input type="checkbox" /> Require photo/proof before marking “Ready”</label>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </section>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>

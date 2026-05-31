@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SyntraLink - Customer Status</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="customer-body">
+  <main class="customer-page">
+    <section class="customer-hero">
+      <div class="customer-copy">
+        <p class="eyebrow">Customer portal</p>
+        <h1>Check your job without calling.</h1>
+        <p class="lede">Enter your email to view the job tied to your account: process, blockers, public notes, and the next promised update.</p>
+        <form id="customerLookup" class="lookup-form">
+          <input id="lookupEmail" type="email" placeholder="your-email@company.com" required />
+          <button type="submit">Show my status</button>
+        </form>
+        <p class="hint">Demo example: marco.rossi@email.it</p>
+      </div>
+
+      <div class="customer-stage">
+        <div id="customerPlaceholder" class="client-art" aria-hidden="true">
+          <div class="glass-ticket">
+            <span>LIVE STATUS</span>
+            <strong>Received -> In Progress -> Ready</strong>
+          </div>
+        </div>
+
+        <section id="customerResult" class="customer-result hidden">
+          <div class="client-card account-card">
+            <div class="client-top">
+              <div>
+                <p class="label">Verified account</p>
+                <h2 id="customerTitle">-</h2>
+              </div>
+              <span id="customerStatusBadge" class="badge blue">-</span>
+            </div>
+
+            <div class="promise">
+              <strong>Next update</strong>
+              <span id="customerNext">-</span>
+            </div>
+
+            <ol id="customerSteps" class="steps"></ol>
+
+            <div class="evidence">
+              <div class="photo-tile">
+                <span>Work proof</span>
+                <strong id="customerStep">-</strong>
+              </div>
+              <div class="note">
+                <strong>Team note</strong>
+                <p id="customerNote">-</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="emptyResult" class="panel empty-state hidden">
+          <p class="label">No job found</p>
+          <h2>This email is not linked to an open job.</h2>
+          <p class="small">Check for typos or ask the business to connect your email address to the job record.</p>
+        </section>
+      </div>
+    </section>
+
+    <a class="admin-return" href="index.html">Admin area</a>
+  </main>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="customer.js"></script>
+</body>
+</html>
